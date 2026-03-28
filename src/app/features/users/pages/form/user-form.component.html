@@ -1,0 +1,106 @@
+<div class="page-container">
+  <p-toast />
+
+  <div class="page-header">
+    <div class="header-left">
+      <p-button
+        icon="pi pi-arrow-left"
+        [text]="true"
+        (onClick)="goBack()"
+      />
+      <h2>{{ isEdit() ? 'Editar usuario' : 'Nuevo usuario' }}</h2>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Nombre</label>
+          <input pInputText formControlName="name" placeholder="Nombre" class="w-full" />
+          @if (form.get('name')?.invalid && form.get('name')?.touched) {
+            <small class="error-msg">El nombre es requerido</small>
+          }
+        </div>
+
+        <div class="field">
+          <label>Apellido</label>
+          <input pInputText formControlName="lastName" placeholder="Apellido" class="w-full" />
+          @if (form.get('lastName')?.invalid && form.get('lastName')?.touched) {
+            <small class="error-msg">El apellido es requerido</small>
+          }
+        </div>
+
+        <div class="field">
+          <label>Correo electrónico</label>
+          <input pInputText formControlName="email" placeholder="correo@ejemplo.com" class="w-full" [readonly]="isEdit()" />
+          @if (form.get('email')?.invalid && form.get('email')?.touched) {
+            <small class="error-msg">Correo inválido</small>
+          }
+        </div>
+
+        <div class="field">
+          <label>Teléfono</label>
+          <input pInputText formControlName="phone" placeholder="Teléfono (opcional)" class="w-full" />
+        </div>
+
+        <div class="field">
+          <label>Rol</label>
+          <p-select
+            formControlName="role"
+            [options]="roles"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecciona un rol"
+            styleClass="w-full"
+          />
+        </div>
+
+        @if (isEdit()) {
+          <div class="field">
+            <label>Estado</label>
+            <p-select
+              formControlName="active"
+              [options]="statusOptions"
+              optionLabel="label"
+              optionValue="value"
+              styleClass="w-full"
+            />
+          </div>
+        }
+
+        @if (!isEdit()) {
+          <div class="field full-width">
+            <label>Contraseña</label>
+            <p-password
+              formControlName="password"
+              placeholder="Mínimo 6 caracteres"
+              [feedback]="true"
+              [toggleMask]="true"
+              styleClass="w-full"
+            />
+            @if (form.get('password')?.invalid && form.get('password')?.touched) {
+              <small class="error-msg">Mínimo 6 caracteres</small>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <p-button
+          label="Cancelar"
+          [outlined]="true"
+          (onClick)="goBack()"
+        />
+        <p-button
+          type="submit"
+          [label]="isEdit() ? 'Guardar cambios' : 'Crear usuario'"
+          [loading]="loading()"
+          [disabled]="form.invalid"
+        />
+      </div>
+
+    </form>
+  </div>
+</div>

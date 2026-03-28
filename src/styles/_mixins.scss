@@ -1,0 +1,23 @@
+@use 'variables' as *;
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin responsive($breakpoint) {
+  @if $breakpoint == mobile {
+    @media (max-width: $mobile) { @content; }
+  } @else if $breakpoint == tablet {
+    @media (max-width: $tablet) { @content; }
+  } @else if $breakpoint == desktop {
+    @media (max-width: $desktop) { @content; }
+  }
+}

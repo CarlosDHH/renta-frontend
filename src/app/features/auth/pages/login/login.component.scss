@@ -1,0 +1,52 @@
+@use '../../../../../styles/variables' as *;
+@use '../../../../../styles/mixins' as *;
+
+.login-container {
+  @include flex-center;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: $spacing-xl;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: $spacing-lg;
+
+  h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: $spacing-xs;
+  }
+
+  p {
+    color: #64748b;
+    font-size: 14px;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-md;
+
+  label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+  }
+}
+
+.error-msg {
+  color: #ef4444;
+  font-size: 12px;
+}

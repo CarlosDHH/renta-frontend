@@ -1,0 +1,193 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+$sidebar-width: 240px;
+$topbar-height: 56px;
+$sidebar-bg: #1e293b;
+$sidebar-text: #94a3b8;
+$sidebar-text-active: #f8fafc;
+$sidebar-active-bg: #334155;
+
+.app-shell {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+// ─── Sidebar desktop ──────────────────────────────────────────
+.desktop-sidebar {
+  width: $sidebar-width;
+  background: $sidebar-bg;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+
+  @include responsive(desktop) {
+    display: none;
+  }
+}
+
+.sidebar-header {
+  padding: $spacing-lg;
+  border-bottom: 1px solid #334155;
+}
+
+.sidebar-logo {
+  font-size: 16px;
+  font-weight: 600;
+  color: $sidebar-text-active;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: $spacing-md 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: 10px $spacing-lg;
+  color: $sidebar-text;
+  text-decoration: none;
+  font-size: 14px;
+  border-radius: 0;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+
+  i { font-size: 16px; }
+
+  &:hover {
+    background: $sidebar-active-bg;
+    color: $sidebar-text-active;
+  }
+
+  &.active {
+    background: $sidebar-active-bg;
+    color: $sidebar-text-active;
+    border-left: 3px solid #3b82f6;
+  }
+}
+
+.sidebar-footer {
+  padding: $spacing-md;
+  border-top: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: $sidebar-text-active;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: 11px;
+  color: $sidebar-text;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: 10px $spacing-sm;
+  background: transparent;
+  border: none;
+  color: $sidebar-text;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  width: 100%;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: $sidebar-active-bg;
+    color: #ef4444;
+  }
+}
+
+// ─── Main wrapper ─────────────────────────────────────────────
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ─── Topbar mobile ────────────────────────────────────────────
+.topbar {
+  height: $topbar-height;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: none;
+  align-items: center;
+  padding: 0 $spacing-md;
+  gap: $spacing-md;
+  flex-shrink: 0;
+
+  @include responsive(desktop) {
+    display: flex;
+  }
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #374151;
+  padding: $spacing-xs;
+}
+
+.topbar-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  flex: 1;
+}
+
+// ─── Main content ─────────────────────────────────────────────
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-lg;
+  background: #f8fafc;
+}
+
+.offline-banner {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  background: #fef3c7;
+  color: #92400e;
+  padding: $spacing-sm $spacing-lg;
+  font-size: 13px;
+  border-bottom: 1px solid #fde68a;
+
+  i { font-size: 14px; }
+}

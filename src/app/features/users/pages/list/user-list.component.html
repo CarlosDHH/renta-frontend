@@ -1,0 +1,96 @@
+<div class="page-container">
+  <p-toast />
+  <p-confirmDialog />
+
+  <div class="page-header">
+    <h2>Usuarios</h2>
+    <p-button
+      label="Nuevo usuario"
+      icon="pi pi-plus"
+      (onClick)="goToCreate()"
+    />
+  </div>
+
+  <div class="search-bar">
+    <input
+      pInputText
+      type="text"
+      placeholder="Buscar por nombre o correo..."
+      [(ngModel)]="searchTerm"
+      (keyup.enter)="onSearch()"
+      class="search-input"
+    />
+    <p-button
+      icon="pi pi-search"
+      (onClick)="onSearch()"
+      [outlined]="true"
+    />
+  </div>
+
+  <p-table
+    [value]="users()"
+    [loading]="loading()"
+    [paginator]="true"
+    [rows]="limit"
+    [totalRecords]="totalRecords()"
+    [lazy]="true"
+    (onPage)="onPageChange($event)"
+    [rowsPerPageOptions]="[10, 20, 50]"
+    styleClass="p-datatable-sm"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Rol</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-user>
+      <tr>
+        <td>{{ user.name }} {{ user.lastName }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone ?? '—' }}</td>
+        <td>
+          <p-tag
+            [value]="user.role"
+            [severity]="getRoleSeverity(user.role)"
+          />
+        </td>
+        <td>
+          <p-tag
+            [value]="user.active ? 'Activo' : 'Inactivo'"
+            [severity]="getStatusSeverity(user.active)"
+          />
+        </td>
+        <td>
+          <div class="actions">
+            <p-button
+              icon="pi pi-pencil"
+              [rounded]="true"
+              [text]="true"
+              severity="info"
+              (onClick)="goToEdit(user.id)"
+            />
+            <p-button
+              icon="pi pi-trash"
+              [rounded]="true"
+              [text]="true"
+              severity="danger"
+              (onClick)="confirmDelete(user)"
+            />
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="empty">
+      <tr>
+        <td colspan="6" class="empty-message">No se encontraron usuarios</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
