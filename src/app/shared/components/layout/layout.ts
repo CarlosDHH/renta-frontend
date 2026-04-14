@@ -43,14 +43,14 @@ export class LayoutComponent {
   sidebarVisible = signal(false)
 
   navItems: NavItem[] = [
-    { label: 'Dashboard',  icon: 'pi pi-home',        route: '/admin/dashboard',  roles: ['ADMIN', 'OPERATOR'] },
-    { label: 'Usuarios',   icon: 'pi pi-users',       route: '/admin/users',      roles: ['ADMIN'] },
-    { label: 'Productos',   icon: 'pi pi-barcode',        route: '/admin/customers',  roles: ['ADMIN', 'OPERATOR'] },
-    { label: 'Servicios',   icon: 'pi pi-exclamation-triangle',        route: '/admin/customers',  roles: ['ADMIN', 'OPERATOR'] },
-    { label: 'Clientes',   icon: 'pi pi-user',        route: '/admin/customers',  roles: ['ADMIN', 'OPERATOR'] },
-    { label: 'Planes',     icon: 'pi pi-box',         route: '/admin/plans',      roles: ['ADMIN'] },
-    { label: 'Contratos',  icon: 'pi pi-file',        route: '/admin/contracts',  roles: ['ADMIN', 'OPERATOR'] },
-    { label: 'Pagos',      icon: 'pi pi-credit-card', route: '/admin/payments',   roles: ['ADMIN', 'OPERATOR'] },
+    { label: 'Dashboard',    icon: 'pi pi-home',        route: '/admin/dashboard',  roles: ['ADMIN', 'OPERATOR'] },
+    { label: 'Usuarios',     icon: 'pi pi-users',       route: '/admin/users',      roles: ['ADMIN'] },
+    { label: 'Clientes',     icon: 'pi pi-user',        route: '/admin/customers',  roles: ['ADMIN', 'OPERATOR'] },
+    { label: 'Planes',       icon: 'pi pi-box',         route: '/admin/plans',      roles: ['ADMIN'] },
+    { label: 'Contratos',    icon: 'pi pi-file',        route: '/admin/contracts',  roles: ['ADMIN', 'OPERATOR'] },
+    { label: 'Pagos',        icon: 'pi pi-credit-card', route: '/admin/payments',   roles: ['ADMIN', 'OPERATOR'] },
+    { label: 'Comprobantes', icon: 'pi pi-receipt',     route: '/admin/receipts',     roles: ['ADMIN', 'OPERATOR'] },
+    { label: 'Landing CMS',  icon: 'pi pi-globe',       route: '/admin/landing-cms',  roles: ['ADMIN'] },
   ]
 
   toggleSidebar(): void {

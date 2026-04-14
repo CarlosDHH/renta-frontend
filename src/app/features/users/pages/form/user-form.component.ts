@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core'
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { InputTextModule } from 'primeng/inputtext'
+import { InputMaskModule } from 'primeng/inputmask';
 import { SelectModule } from 'primeng/select'
 import { ButtonModule } from 'primeng/button'
 import { ToastModule } from 'primeng/toast'
@@ -20,6 +21,7 @@ import { UserService } from '../../services/user.service'
     ButtonModule,
     ToastModule,
     PasswordModule,
+    InputMaskModule,
   ],
   providers: [MessageService],
   templateUrl: './user-form.component.html',
@@ -50,7 +52,7 @@ export class UserFormComponent implements OnInit {
     name:     ['', [Validators.required]],
     lastName: ['', [Validators.required]],
     email:    ['', [Validators.required, Validators.email]],
-    phone:    [''],
+    phone:    ['', [Validators.required, Validators.minLength(10), Validators.maxLength(15)]],
     role:     ['OPERATOR', [Validators.required]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     active:   [true],

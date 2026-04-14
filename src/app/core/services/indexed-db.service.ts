@@ -11,7 +11,7 @@ export interface PendingOperation {
 }
 
 const DB_NAME = 'renta-internet-db'
-const DB_VERSION = 1
+const DB_VERSION = 2  // ← incrementamos la versión para que upgrade() se ejecute
 
 const STORES = {
   USERS: 'users',
@@ -25,21 +25,48 @@ export class IndexedDbService {
   async init(): Promise<void> {
     try {
       this.db = await openDB(DB_NAME, DB_VERSION, {
-        upgrade(db) {
-          // Store de usuarios cacheados
-          if (!db.objectStoreNames.contains(STORES.USERS)) {
-            const userStore = db.createObjectStore(STORES.USERS, { keyPath: 'id' })
-            userStore.createIndex('email', 'email', { unique: true })
-          }
+        // upgrade(db, oldVersion) {
+        //   // Si es la primera vez
+        //   if (oldVersion < 1) {
+        //     const userStore = db.createObjectStore(STORES.USERS, { keyPath: 'id' })
+        //     userStore.createIndex('email', 'email') // sin unique
 
-          // Store de operaciones pendientes
-          if (!db.objectStoreNames.contains(STORES.PENDING_OPS)) {
+        //     const opsStore = db.createObjectStore(STORES.PENDING_OPS, {
+        //       keyPath: 'id',
+        //       autoIncrement: true,
+        //     })
+        //     opsStore.createIndex('entity', 'entity')
+        //     opsStore.createIndex('createdAt', 'createdAt')
+        //   }
+
+        //   // Migración de v1 a v2 — elimina el índice único de email
+        //   if (oldVersion === 1) {
+        //     const userStore = db.transaction.objectStore(STORES.USERS)
+        //     if (userStore.indexNames.contains('email')) {
+        //       userStore.deleteIndex('email')
+        //       userStore.createIndex('email', 'email') // sin unique
+        //     }
+        //   }
+        // },
+        upgrade(db, oldVersion, newVersion, transaction) {
+          if (oldVersion < 1) {
+            const userStore = db.createObjectStore(STORES.USERS, { keyPath: 'id' })
+            userStore.createIndex('email', 'email')
+
             const opsStore = db.createObjectStore(STORES.PENDING_OPS, {
               keyPath: 'id',
               autoIncrement: true,
             })
             opsStore.createIndex('entity', 'entity')
             opsStore.createIndex('createdAt', 'createdAt')
+          }
+
+          if (oldVersion === 1) {
+            const userStore = transaction.objectStore(STORES.USERS)
+            if (userStore.indexNames.contains('email')) {
+              userStore.deleteIndex('email')
+              userStore.createIndex('email', 'email')
+            }
           }
         },
       })
@@ -52,7 +79,7 @@ export class IndexedDbService {
   async saveUsers(users: any[]): Promise<void> {
     const tx = this.db.transaction(STORES.USERS, 'readwrite')
     await Promise.all([
-      ...users.map(user => tx.store.put(user)),
+      ...users.map(user => tx.store.put({ ...user, synced: true })),
       tx.done,
     ])
   }
@@ -63,6 +90,10 @@ export class IndexedDbService {
 
   async saveUser(user: any): Promise<void> {
     await this.db.put(STORES.USERS, user)
+  }
+
+  async clearUsers(): Promise<void> {
+    await this.db.clear(STORES.USERS)
   }
 
   async deleteUserLocal(id: string): Promise<void> {

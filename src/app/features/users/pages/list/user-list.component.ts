@@ -10,6 +10,8 @@ import { ConfirmationService, MessageService } from 'primeng/api'
 import { FormsModule } from '@angular/forms'
 
 import { UserService, User } from '../../services/user.service'
+import { SyncService } from '../../../../core/services/sync.service'
+import { Subject, takeUntil } from 'rxjs'
 
 @Component({
   selector: 'app-user-list',
@@ -33,6 +35,9 @@ export class UserListComponent implements OnInit {
   private confirmationService = inject(ConfirmationService)
   private messageService = inject(MessageService)
 
+  private syncService = inject(SyncService)
+  private destroy$ = new Subject<void>()
+
   users = signal<User[]>([])
   loading = signal(false)
   totalRecords = signal(0)
@@ -43,6 +48,22 @@ export class UserListComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers()
+    // Recarga la lista cuando la sincronización termina
+    this.syncService.syncCompleted$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sincronizado',
+          detail: 'Los cambios offline se sincronizaron correctamente'
+        })
+        this.loadUsers()
+      })
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next()
+    this.destroy$.complete()
   }
 
   loadUsers(): void {

@@ -1,6 +1,6 @@
-import { Injectable, inject, effect } from '@angular/core'
+import { Injectable, inject } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
-import { firstValueFrom } from 'rxjs'
+import { Subject, firstValueFrom } from 'rxjs'
 import { environment } from '../../../environments/environment'
 import { IndexedDbService, PendingOperation } from './indexed-db.service'
 import { NetworkService } from './network.service'
@@ -15,9 +15,18 @@ export class SyncService {
 
   isSyncing = false
 
+  // Subject que emite cuando la sincronización termina
+  // Los componentes se suscriben para saber cuándo recargar
+  syncCompleted$ = new Subject<void>()
+
   startListening(): void {
     window.addEventListener('online', () => {
+      this.networkService.isOnline.set(true)
       this.syncPendingOperations()
+    })
+
+    window.addEventListener('offline', () => {
+      this.networkService.isOnline.set(false)
     })
   }
 
@@ -27,13 +36,23 @@ export class SyncService {
 
     try {
       const pending = await this.idbService.getPendingOperations()
-      if (pending.length === 0) return
+      if (pending.length === 0) {
+        this.isSyncing = false
+        return
+      }
 
       console.log(`Sincronizando ${pending.length} operaciones pendientes...`)
 
       for (const op of pending) {
         await this.processOperation(op)
       }
+
+      // Limpia el caché de usuarios para forzar recarga fresca del backend
+      await this.idbService.clearUsers()
+
+      console.log('Sincronización completada')
+      this.syncCompleted$.next()
+
     } catch (error) {
       console.error('Error durante sincronización:', error)
     } finally {
