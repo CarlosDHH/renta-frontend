@@ -42,4 +42,6 @@ export const authReducer = createReducer(
   })),
 
   on(AuthActions.refreshTokenFailure, (state) => initialAuthState),
+  
+  on(AuthActions.clearAuth, () => initialAuthState),
 )

@@ -4,11 +4,7 @@
 
   <div class="page-header">
     <h2>Usuarios</h2>
-    <p-button
-      label="Nuevo usuario"
-      icon="pi pi-plus"
-      (onClick)="goToCreate()"
-    />
+    <p-button label="Nuevo usuario" icon="pi pi-plus" (onClick)="goToCreate()" />
   </div>
 
   <div class="search-bar">
@@ -20,11 +16,7 @@
       (keyup.enter)="onSearch()"
       class="search-input"
     />
-    <p-button
-      icon="pi pi-search"
-      (onClick)="onSearch()"
-      [outlined]="true"
-    />
+    <p-button icon="pi pi-search" (onClick)="onSearch()" [outlined]="true" />
   </div>
 
   <p-table
@@ -40,6 +32,8 @@
   >
     <ng-template pTemplate="header">
       <tr>
+        <th></th>
+        <!-- columna indicador -->
         <th>Nombre</th>
         <th>Correo</th>
         <th>Teléfono</th>
@@ -51,14 +45,16 @@
 
     <ng-template pTemplate="body" let-user>
       <tr>
+        <td>
+          @if (user.synced === false) {
+            <i class="pi pi-clock" style="color: #f59e0b" title="Pendiente de sincronizar"></i>
+          }
+        </td>
         <td>{{ user.name }} {{ user.lastName }}</td>
         <td>{{ user.email }}</td>
         <td>{{ user.phone ?? '—' }}</td>
         <td>
-          <p-tag
-            [value]="user.role"
-            [severity]="getRoleSeverity(user.role)"
-          />
+          <p-tag [value]="user.role" [severity]="getRoleSeverity(user.role)" />
         </td>
         <td>
           <p-tag

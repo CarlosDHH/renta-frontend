@@ -14,6 +14,8 @@ export interface User {
   role: 'ADMIN' | 'OPERATOR'
   active: boolean
   createdAt: string
+  synced?: boolean  // ← nuevo campo
+
 }
 
 export interface UserListResponse {
@@ -153,6 +155,7 @@ export class UserService {
       role: payload.role,
       active: true,
       createdAt: new Date().toISOString(),
+      synced: false
     }
 
     await this.idbService.saveUser(tempUser)
@@ -185,7 +188,7 @@ export class UserService {
       return { statusCode: 404, success: false, message: 'Usuario no encontrado', data: null as any }
     }
 
-    const updated = { ...existing, ...payload }
+    const updated = { ...existing, ...payload, synced: false }
     await this.idbService.saveUser(updated)
     await this.idbService.addPendingOperation({
       entity: 'users',

@@ -37,3 +37,5 @@ export const refreshTokenFailure = createAction(
   '[Auth] Refresh Token Failure',
   props<{ error: string }>()
 )
+
+export const clearAuth = createAction('[Auth] Clear Auth')

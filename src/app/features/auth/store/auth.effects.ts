@@ -26,7 +26,10 @@ export class AuthEffects {
         if (accessToken && refreshToken && user) {
           return AuthActions.rehydrateAuth({ user, accessToken, refreshToken })
         }
-        return AuthActions.logout()
+        // Si no hay tokens → despacha logout → logout$ navega a /auth/login
+        // Esto pasa aunque estés en /home que es pública
+        return AuthActions.clearAuth() // ← solo limpia el estado, no navega
+        // return AuthActions.logout()
       })
     )
   )

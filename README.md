@@ -57,3 +57,10 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+
+
+<!-- dev test -->
+npx http-server dist/renta-internet-front/browser -p 8080
+then export the url in a port on vscode, to test offline mode
+
