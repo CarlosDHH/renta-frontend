@@ -76,6 +76,16 @@
         <td>
           <div class="actions">
             <p-button
+              icon="pi pi-dollar"
+              [rounded]="true"
+              [text]="true"
+              severity="success"
+              pTooltip="Registrar pago"
+              tooltipPosition="top"
+              [disabled]="!hasActiveContract(customer)"
+              (onClick)="openPaymentDialog(customer)"
+            />
+            <p-button
               icon="pi pi-pencil"
               [rounded]="true"
               [text]="true"
@@ -101,3 +111,10 @@
     </ng-template>
   </p-table>
 </div>
+
+<app-payment-dialog
+  [customer]="selectedCustomer()"
+  [visible]="paymentDialogVisible()"
+  (visibleChange)="paymentDialogVisible.set($event)"
+  (paymentSuccess)="onPaymentSuccess()"
+/>

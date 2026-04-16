@@ -16,6 +16,16 @@ export interface Customer {
   contracts?: CustomerContract[]
 }
 
+export interface ContractPayment {
+  id: string
+  amount: number
+  paymentType: 'FULL' | 'PARTIAL_LATE'
+  balance: number | null
+  paidAt: string
+  periodFrom: string
+  periodTo: string
+}
+
 export interface CustomerContract {
   id: string
   status: 'ACTIVE' | 'SUSPENDED' | 'CANCELLED'
@@ -25,6 +35,7 @@ export interface CustomerContract {
     mbps: number
     price: number
   }
+  payments?: ContractPayment[]
 }
 
 export interface CustomerListResponse {

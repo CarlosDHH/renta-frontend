@@ -1,58 +1,130 @@
-<div class="login-container">
-  <div class="login-card">
-    <div class="login-header">
-      <h1>Renta Internet</h1>
-      <p>Inicia sesión para continuar</p>
+<div class="login-page">
+
+  <!-- ── Left: Brand panel ── -->
+  <aside class="brand-panel">
+    <div class="mesh-bg" aria-hidden="true">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+      <svg class="dot-grid" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="login-dots" width="28" height="28" patternUnits="userSpaceOnUse">
+            <circle cx="1.5" cy="1.5" r="1.5" fill="rgba(255,255,255,0.07)"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#login-dots)"/>
+      </svg>
     </div>
 
-    @if (error$ | async; as string) {
-      <p-message severity="error" [text]="'Ocurrio un error inesperado'" styleClass="w-full mb-4" />
-    }
+    <div class="brand-inner">
+      <a routerLink="/home" class="back-link">
+        <i class="pi pi-arrow-left"></i>
+        Volver al inicio
+      </a>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="field">
-        <label for="email">Correo electrónico</label>
-        <input
-          pInputText
-          id="email"
-          type="email"
-          formControlName="email"
-          placeholder="correo@ejemplo.com"
-          class="w-full"
-        />
-        @if (email?.invalid && email?.touched) {
-          <small class="error-msg">
-            {{ email?.errors?.['required'] ? 'El correo es requerido' : 'Correo inválido' }}
-          </small>
-        }
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <i class="pi pi-wifi"></i>
+        </div>
+        <span>Renta Internet</span>
       </div>
 
-      <div class="field">
-        <label for="password">Contraseña</label>
-        <p-password
-          id="password"
-          formControlName="password"
-          placeholder="••••••••"
-          [feedback]="false"
-          [toggleMask]="true"
-          styleClass="w-full"
-        />
-        @if (password?.invalid && password?.touched) {
-          <small class="error-msg">
-            {{
-              password?.errors?.['required'] ? 'La contraseña es requerida' : 'Mínimo 6 caracteres'
-            }}
-          </small>
-        }
+      <h2 class="brand-headline">
+        Conectividad que impulsa<br />
+        <span>tu negocio</span>
+      </h2>
+      <p class="brand-sub">
+        Gestiona servicios, usuarios y contratos desde un solo lugar, en tiempo real.
+      </p>
+
+      <div class="brand-stats">
+        <div class="stat">
+          <span class="stat-num">99.9%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">500+</span>
+          <span class="stat-label">Clientes</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">10G</span>
+          <span class="stat-label">Velocidad</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Right: Form panel ── -->
+  <main class="form-panel">
+    <div class="mobile-header">
+      <a routerLink="/home" class="mobile-back">
+        <i class="pi pi-arrow-left"></i>
+        Volver al inicio
+      </a>
+      <div class="mobile-logo">
+        <div class="logo-icon-sm">
+          <i class="pi pi-wifi"></i>
+        </div>
+        <span>Renta Internet</span>
+      </div>
+    </div>
+
+    <div class="login-card">
+      <div class="login-header">
+        <h1>Bienvenido de vuelta</h1>
+        <p>Ingresa tus credenciales para acceder al panel</p>
       </div>
 
-      <p-button
-        type="submit"
-        label="Iniciar sesión"
-        [loading]="!!(loading$ | async)"
-        [disabled]="loginForm.invalid"
-        styleClass="w-full mt-2"
-      />
-    </form>
-  </div>
+      @if (error$ | async; as string) {
+        <p-message severity="error" [text]="'Credenciales incorrectas. Intenta de nuevo.'" styleClass="w-full mb-4" />
+      }
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="correo@ejemplo.com"
+            class="w-full"
+          />
+          @if (email?.invalid && email?.touched) {
+            <small class="error-msg">
+              {{ email?.errors?.['required'] ? 'El correo es requerido' : 'Correo inválido' }}
+            </small>
+          }
+        </div>
+
+        <div class="field">
+          <label for="password">Contraseña</label>
+          <p-password
+            id="password"
+            formControlName="password"
+            placeholder="••••••••"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+          />
+          @if (password?.invalid && password?.touched) {
+            <small class="error-msg">
+              {{
+                password?.errors?.['required'] ? 'La contraseña es requerida' : 'Mínimo 6 caracteres'
+              }}
+            </small>
+          }
+        </div>
+
+        <p-button
+          type="submit"
+          label="Iniciar sesión"
+          [loading]="!!(loading$ | async)"
+          [disabled]="loginForm.invalid"
+          styleClass="w-full mt-2"
+        />
+      </form>
+    </div>
+  </main>
+
 </div>

@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core'
 import { AsyncPipe } from '@angular/common'
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms'
+import { RouterLink } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { Subject } from 'rxjs'
 import { InputTextModule } from 'primeng/inputtext'
@@ -17,6 +18,7 @@ import { selectAuthLoading, selectAuthError } from '../../store/auth.selectors'
   imports: [
     AsyncPipe,
     ReactiveFormsModule,
+    RouterLink,
     InputTextModule,
     PasswordModule,
     ButtonModule,

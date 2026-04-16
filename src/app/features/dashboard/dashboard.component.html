@@ -1,0 +1,52 @@
+<div class="dashboard">
+
+  @if (user$ | async; as user) {
+    <div class="dashboard-welcome">
+      <h2>Bienvenido, {{ user.name }}</h2>
+      <p>Aquí tienes un resumen del sistema.</p>
+    </div>
+  }
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon stat-icon--blue">
+        <i class="pi pi-user"></i>
+      </div>
+      <div class="stat-body">
+        <span class="stat-num">—</span>
+        <span class="stat-label">Clientes activos</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-icon--green">
+        <i class="pi pi-file-check"></i>
+      </div>
+      <div class="stat-body">
+        <span class="stat-num">—</span>
+        <span class="stat-label">Contratos vigentes</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-icon--amber">
+        <i class="pi pi-credit-card"></i>
+      </div>
+      <div class="stat-body">
+        <span class="stat-num">—</span>
+        <span class="stat-label">Pagos del mes</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon stat-icon--indigo">
+        <i class="pi pi-box"></i>
+      </div>
+      <div class="stat-body">
+        <span class="stat-num">—</span>
+        <span class="stat-label">Planes activos</span>
+      </div>
+    </div>
+  </div>
+
+</div>

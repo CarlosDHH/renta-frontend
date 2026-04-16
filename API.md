@@ -252,9 +252,9 @@ Query params: `search` (busca en name, lastName, phone, municipality), `active` 
   "name": "string",          // requerido
   "lastName": "string",      // requerido
   "phone": "string",         // requerido
-  "email": "string",         // opcional
-  "municipality": "string",  // opcional
-  "city": "string"           // opcional
+  "municipality": "string",  // requerido
+  "city": "string",          // requerido
+  "email": "string"          // opcional, debe ser único si se envía
 }
 ```
 

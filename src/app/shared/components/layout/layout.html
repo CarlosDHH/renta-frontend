@@ -9,13 +9,17 @@
   <!-- Sidebar desktop -->
   <aside class="sidebar desktop-sidebar">
     <div class="sidebar-header">
-      <span class="sidebar-logo">Configuracion</span>
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <i class="pi pi-wifi"></i>
+        </div>
+        <span class="brand-name">Renta Internet</span>
+      </div>
     </div>
 
     <nav class="sidebar-nav">
       @for (item of navItems; track item.route) {
         <a
-
           [routerLink]="item.route"
           routerLinkActive="active"
           class="nav-item"
@@ -41,6 +45,10 @@
           </div>
         </div>
       }
+      <a routerLink="/home" class="site-link" pRipple>
+        <i class="pi pi-arrow-up-right"></i>
+        <span>Ver sitio web</span>
+      </a>
       <button class="logout-btn" (click)="onLogout()" pRipple>
         <i class="pi pi-sign-out"></i>
         <span>Cerrar sesión</span>
@@ -56,7 +64,12 @@
       <button class="hamburger" (click)="toggleSidebar()">
         <i class="pi pi-bars"></i>
       </button>
-      <span class="topbar-title">Configuracion</span>
+      <div class="topbar-brand">
+        <div class="brand-icon-sm">
+          <i class="pi pi-wifi"></i>
+        </div>
+        <span class="brand-name-sm">Renta Internet</span>
+      </div>
       @if (user$ | async; as user) {
         <p-avatar
           [label]="getInitials(user.name, user.lastName)"
@@ -72,7 +85,12 @@
       styleClass="mobile-sidebar"
     >
       <ng-template pTemplate="header">
-        <span class="sidebar-logo">Renta Internet</span>
+        <div class="sidebar-brand">
+          <div class="brand-icon">
+            <i class="pi pi-wifi"></i>
+          </div>
+          <span class="brand-name">Renta Internet</span>
+        </div>
       </ng-template>
 
       <nav class="sidebar-nav">
@@ -91,10 +109,16 @@
       </nav>
 
       <ng-template pTemplate="footer">
-        <button class="logout-btn" (click)="onLogout()" pRipple>
-          <i class="pi pi-sign-out"></i>
-          <span>Cerrar sesión</span>
-        </button>
+        <div class="mobile-drawer-footer">
+          <a routerLink="/home" class="site-link" (click)="sidebarVisible.set(false)">
+            <i class="pi pi-arrow-up-right"></i>
+            <span>Ver sitio web</span>
+          </a>
+          <button class="logout-btn" (click)="onLogout()" pRipple>
+            <i class="pi pi-sign-out"></i>
+            <span>Cerrar sesión</span>
+          </button>
+        </div>
       </ng-template>
     </p-drawer>
 

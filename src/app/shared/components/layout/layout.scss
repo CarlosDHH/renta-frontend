@@ -3,10 +3,12 @@
 
 $sidebar-width: 240px;
 $topbar-height: 56px;
-$sidebar-bg: #1e293b;
-$sidebar-text: #94a3b8;
+$sidebar-bg: #09090b;
+$sidebar-border: rgba(255, 255, 255, 0.07);
+$sidebar-text: rgba(255, 255, 255, 0.42);
 $sidebar-text-active: #f8fafc;
-$sidebar-active-bg: #334155;
+$sidebar-hover-bg: rgba(255, 255, 255, 0.05);
+$sidebar-active-bg: rgba(37, 99, 235, 0.14);
 
 .app-shell {
   display: flex;
@@ -28,15 +30,36 @@ $sidebar-active-bg: #334155;
 }
 
 .sidebar-header {
-  padding: $spacing-lg;
-  border-bottom: 1px solid #334155;
+  padding: $spacing-lg $spacing-lg $spacing-md;
+  border-bottom: 1px solid $sidebar-border;
 }
 
-.sidebar-logo {
-  font-size: 16px;
-  font-weight: 600;
-  color: $sidebar-text-active;
-  letter-spacing: 0.5px;
+// ─── Brand logo ───────────────────────────────────────────────
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i { font-size: 15px; color: white; }
+  }
+
+  .brand-name {
+    font-family: $font-display;
+    font-size: 16px;
+    font-weight: 900;
+    color: $sidebar-text-active;
+    letter-spacing: -0.03em;
+  }
 }
 
 .sidebar-nav {
@@ -56,30 +79,30 @@ $sidebar-active-bg: #334155;
   color: $sidebar-text;
   text-decoration: none;
   font-size: 14px;
-  border-radius: 0;
+  border-left: 3px solid transparent;
   transition: background 0.15s, color 0.15s;
   cursor: pointer;
 
   i { font-size: 16px; }
 
   &:hover {
-    background: $sidebar-active-bg;
+    background: $sidebar-hover-bg;
     color: $sidebar-text-active;
   }
 
   &.active {
     background: $sidebar-active-bg;
     color: $sidebar-text-active;
-    border-left: 3px solid #3b82f6;
+    border-left-color: #3b82f6;
   }
 }
 
 .sidebar-footer {
   padding: $spacing-md;
-  border-top: 1px solid #334155;
+  border-top: 1px solid $sidebar-border;
   display: flex;
   flex-direction: column;
-  gap: $spacing-sm;
+  gap: 2px;
 }
 
 .user-info {
@@ -87,6 +110,7 @@ $sidebar-active-bg: #334155;
   align-items: center;
   gap: $spacing-sm;
   padding: $spacing-sm;
+  margin-bottom: $spacing-xs;
 }
 
 .user-details {
@@ -108,7 +132,27 @@ $sidebar-active-bg: #334155;
   font-size: 11px;
   color: $sidebar-text;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.08em;
+}
+
+.site-link {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: 10px $spacing-sm;
+  color: $sidebar-text;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 6px;
+  width: 100%;
+  transition: background 0.15s, color 0.15s;
+
+  i { font-size: 13px; }
+
+  &:hover {
+    background: $sidebar-hover-bg;
+    color: $sidebar-text-active;
+  }
 }
 
 .logout-btn {
@@ -126,9 +170,15 @@ $sidebar-active-bg: #334155;
   transition: background 0.15s, color 0.15s;
 
   &:hover {
-    background: $sidebar-active-bg;
+    background: $sidebar-hover-bg;
     color: #ef4444;
   }
+}
+
+.mobile-drawer-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 // ─── Main wrapper ─────────────────────────────────────────────
@@ -164,11 +214,32 @@ $sidebar-active-bg: #334155;
   padding: $spacing-xs;
 }
 
-.topbar-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1e293b;
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   flex: 1;
+
+  .brand-icon-sm {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i { font-size: 13px; color: white; }
+  }
+
+  .brand-name-sm {
+    font-family: $font-display;
+    font-size: 15px;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.03em;
+  }
 }
 
 // ─── Main content ─────────────────────────────────────────────

@@ -17,3 +17,9 @@ html, body {
   font-family: $font-family;
   font-size: $font-size-base;
 }
+
+// Títulos de página admin — Manrope sin romper los estilos de cada componente
+.page-header h2 {
+  font-family: $font-display;
+  letter-spacing: -0.03em;
+}
