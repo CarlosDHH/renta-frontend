@@ -21,11 +21,11 @@ export class ContactComponent {
   readonly error = signal<string | null>(null);
 
   readonly form = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    email: ['', [Validators.required, Validators.email]],
-    phone: ['', [Validators.pattern(/^[\d\s\-\+\(\)]{7,15}$/)]],
+    name:        ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+    email:       ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
+    phone:       ['', [Validators.pattern(/^\+?[\d\s\-\(\)]{7,20}$/), Validators.maxLength(20)]],
     serviceType: ['fiber', Validators.required],
-    message: ['', [Validators.required, Validators.minLength(10)]],
+    message:     ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
   });
 
   readonly serviceOptions = [
@@ -38,8 +38,36 @@ export class ContactComponent {
   ];
 
   isInvalid(field: string): boolean {
-    const control = this.form.get(field);
-    return !!(control?.invalid && control?.touched);
+    const ctrl = this.form.get(field);
+    return !!(ctrl?.invalid && ctrl?.touched);
+  }
+
+  getFieldError(field: string): string {
+    const ctrl = this.form.get(field);
+    if (!ctrl?.touched || ctrl.valid) return '';
+    const e = ctrl.errors ?? {};
+    switch (field) {
+      case 'name':
+        if (e['required'])   return 'El nombre es obligatorio';
+        if (e['minlength'])  return 'Mínimo 2 caracteres';
+        if (e['maxlength'])  return 'Máximo 100 caracteres';
+        break;
+      case 'email':
+        if (e['required'])   return 'El correo es obligatorio';
+        if (e['email'])      return 'Formato inválido (ej. nombre@empresa.com)';
+        if (e['maxlength'])  return 'Máximo 150 caracteres';
+        break;
+      case 'phone':
+        if (e['pattern'])    return 'Solo dígitos, espacios, +, - y paréntesis (7-20 caracteres)';
+        if (e['maxlength'])  return 'Máximo 20 caracteres';
+        break;
+      case 'message':
+        if (e['required'])   return 'El mensaje es obligatorio';
+        if (e['minlength'])  return 'Mínimo 10 caracteres';
+        if (e['maxlength'])  return 'Máximo 1000 caracteres';
+        break;
+    }
+    return '';
   }
 
   onSubmit(): void {

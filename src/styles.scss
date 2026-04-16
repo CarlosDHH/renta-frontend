@@ -23,3 +23,41 @@ html, body {
   font-family: $font-display;
   letter-spacing: -0.03em;
 }
+
+// ─── Mobile sidebar drawer (tema oscuro) ─────────────────────
+// El p-drawer se renderiza en un portal fuera del DOM del componente,
+// por eso los overrides van aquí y no en layout.scss
+.mobile-sidebar {
+  --p-drawer-background:    #09090b;
+  --p-drawer-border-color:  rgba(255, 255, 255, 0.07);
+  --p-drawer-color:         rgba(255, 255, 255, 0.42);
+  --p-drawer-content-padding: 0;
+
+  background: #09090b !important;
+
+  .p-drawer-header {
+    background: #09090b;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 24px 24px 16px;
+  }
+
+  .p-drawer-content {
+    background: #09090b;
+    padding: 0;
+  }
+
+  .p-drawer-footer {
+    background: #09090b;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 12px;
+  }
+
+  .p-drawer-close-button {
+    color: rgba(255, 255, 255, 0.42) !important;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+      color: #f8fafc !important;
+    }
+  }
+}
