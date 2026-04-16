@@ -9,8 +9,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog'
 import { ToastModule } from 'primeng/toast'
 import { ConfirmationService, MessageService } from 'primeng/api'
 import { FormsModule } from '@angular/forms'
+import { TooltipModule } from 'primeng/tooltip'
 
 import { CustomerService, Customer } from '../../services/customer.service'
+import { PaymentDialogComponent } from '../../components/payment-dialog/payment-dialog.component'
 
 @Component({
   selector: 'app-customer-list',
@@ -24,6 +26,8 @@ import { CustomerService, Customer } from '../../services/customer.service'
     ConfirmDialogModule,
     ToastModule,
     FormsModule,
+    TooltipModule,
+    PaymentDialogComponent,
   ],
   providers: [ConfirmationService, MessageService],
   templateUrl: './customer-list.component.html',
@@ -39,6 +43,9 @@ export class CustomerListComponent implements OnInit {
   loading = signal(false)
   totalRecords = signal(0)
   searchTerm = signal('')
+
+  selectedCustomer = signal<Customer | null>(null)
+  paymentDialogVisible = signal(false)
 
   activeFilter: boolean | undefined = undefined
   page = 1
@@ -87,6 +94,16 @@ export class CustomerListComponent implements OnInit {
     this.loadCustomers()
   }
 
+  openPaymentDialog(customer: Customer): void {
+    this.selectedCustomer.set(customer)
+    this.paymentDialogVisible.set(true)
+  }
+
+  onPaymentSuccess(): void {
+    this.paymentDialogVisible.set(false)
+    this.loadCustomers()
+  }
+
   goToCreate(): void {
     this.router.navigate(['/admin/customers/new'])
   }
@@ -116,6 +133,10 @@ export class CustomerListComponent implements OnInit {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar el cliente' })
       },
     })
+  }
+
+  hasActiveContract(customer: Customer): boolean {
+    return !!customer.contracts?.some((c) => c.status === 'ACTIVE')
   }
 
   getStatusSeverity(active: boolean): 'success' | 'danger' {
