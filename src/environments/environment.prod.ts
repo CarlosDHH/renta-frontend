@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://tu-dominio.com/api',
+  apiUrl: 'https://renta-backend-production-855d.up.railway.app/api',
 }
