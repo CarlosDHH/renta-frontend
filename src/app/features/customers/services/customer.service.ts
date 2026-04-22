@@ -19,7 +19,7 @@ export interface Customer {
 export interface ContractPayment {
   id: string
   amount: number
-  paymentType: 'FULL' | 'PARTIAL_LATE'
+  paymentType: 'FULL' | 'PARTIAL_LATE' | 'PARTIAL_ADVANCE'
   balance: number | null
   paidAt: string
   periodFrom: string

@@ -152,8 +152,9 @@
   padding: 3px 10px;
   border-radius: 20px;
 
-  &--FULL         { background: #dcfce7; color: #166534; }
-  &--PARTIAL_LATE { background: #fff7ed; color: #9a3412; }
+  &--FULL             { background: #dcfce7; color: #166534; }
+  &--PARTIAL_LATE     { background: #fff7ed; color: #9a3412; }
+  &--PARTIAL_ADVANCE  { background: #eff6ff; color: #1d4ed8; }
 }
 
 .preview-note {
