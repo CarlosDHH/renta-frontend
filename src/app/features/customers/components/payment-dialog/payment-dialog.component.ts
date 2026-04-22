@@ -33,7 +33,7 @@ interface PaymentInfo {
 interface PaymentPreview {
   periodFrom: Date
   periodTo: Date
-  paymentType: 'FULL' | 'PARTIAL_LATE'
+  paymentType: 'FULL' | 'PARTIAL_LATE' | 'PARTIAL_ADVANCE'
   balance: number | null
   autoNote: string
 }
@@ -125,12 +125,14 @@ export class PaymentDialogComponent implements OnChanges, OnDestroy {
       case 'grace':   return { icon: 'pi-clock',               label: 'Dentro del periodo de gracia',        subtitle: `Debe ${fmt(info.totalOwed)} — plazo hasta el día 5 del mes` }
       case 'late':    return { icon: 'pi-exclamation-triangle', label: 'Pago tardío',                        subtitle: `Debe ${fmt(info.totalOwed)} — venció el día 5 del mes` }
       case 'overdue': return { icon: 'pi-times-circle',         label: `Deuda acumulada (${info.pendingMonths} meses)`, subtitle: `Total adeudado: ${fmt(info.totalOwed)}` }
-      case 'ahead':   return { icon: 'pi-check-circle',         label: 'Al corriente',                       subtitle: 'El cliente ya pagó el mes en curso — puede anticipar mensualidades futuras' }
+      case 'ahead':   return info.hasOutstandingBalance
+        ? { icon: 'pi-info-circle', label: 'Anticipo parcial', subtitle: `Falta ${fmt(info.totalOwed)} para completar el siguiente período anticipado` }
+        : { icon: 'pi-check-circle', label: 'Al corriente', subtitle: 'El cliente ya pagó el mes en curso — puede anticipar mensualidades futuras' }
     }
   }
 
   get paymentTypeLabel(): string {
-    const map: Record<string, string> = { FULL: 'Completo', PARTIAL_LATE: 'Parcial / tardío' }
+    const map: Record<string, string> = { FULL: 'Completo', PARTIAL_LATE: 'Parcial / tardío', PARTIAL_ADVANCE: 'Abono anticipado' }
     return map[this.preview?.paymentType ?? ''] ?? ''
   }
 
@@ -154,7 +156,7 @@ export class PaymentDialogComponent implements OnChanges, OnDestroy {
     this.sub$.next() // cancel previous subscriptions
 
     const defaultAmount = this.paymentInfo?.isAhead
-      ? this.planPrice
+      ? (this.paymentInfo.hasOutstandingBalance ? this.paymentInfo.totalOwed : this.planPrice)
       : (this.paymentInfo?.totalOwed ?? this.planPrice)
 
     this.form.reset({ paymentMethod: 'CASH', notes: '', amount: defaultAmount })
@@ -196,9 +198,25 @@ export class PaymentDialogComponent implements OnChanges, OnDestroy {
       (today.getMonth() - periodFrom.getMonth()) + 1
 
     if (pending <= 0) {
+      const aheadPayments = this.activeContract?.payments ?? []
+      const latestAhead = aheadPayments.length
+        ? [...aheadPayments].sort((a, b) => new Date(b.paidAt).getTime() - new Date(a.paidAt).getTime())[0]
+        : null
+      const advanceBalance = latestAhead?.paymentType === 'PARTIAL_ADVANCE' && latestAhead.balance != null
+        ? Number(latestAhead.balance)
+        : null
+      const hasOutstandingBalance = advanceBalance != null && advanceBalance > 0
       return {
-        status: 'ahead', pendingMonths: 0, totalOwed: 0, periodFrom,
-        isFirstPayment: false, isLate: false, isAhead: true, hasOutstandingBalance: false,
+        status: 'ahead',
+        pendingMonths: 0,
+        totalOwed: hasOutstandingBalance ? advanceBalance! : 0,
+        periodFrom: hasOutstandingBalance && latestAhead?.periodFrom
+          ? new Date(latestAhead.periodFrom)
+          : periodFrom,
+        isFirstPayment: false,
+        isLate: false,
+        isAhead: true,
+        hasOutstandingBalance,
       }
     }
 
@@ -215,7 +233,10 @@ export class PaymentDialogComponent implements OnChanges, OnDestroy {
     const latestPayment = payments.length
       ? [...payments].sort((a, b) => new Date(b.paidAt).getTime() - new Date(a.paidAt).getTime())[0]
       : null
-    const pendingBalance = latestPayment?.paymentType === 'PARTIAL_LATE' && latestPayment.balance != null
+    const pendingBalance = (
+      latestPayment?.paymentType === 'PARTIAL_LATE' ||
+      latestPayment?.paymentType === 'PARTIAL_ADVANCE'
+    ) && latestPayment.balance != null
       ? Number(latestPayment.balance)
       : null
     const hasOutstandingBalance = pendingBalance != null && pendingBalance > 0
@@ -250,9 +271,53 @@ export class PaymentDialogComponent implements OnChanges, OnDestroy {
       }
     }
 
-    // Already ahead → register advance as FULL (with remainder extension)
+    // Already ahead → handle partial advance balance or register new advance
     if (isAhead) {
-      const months = Math.max(1, Math.floor(amount / price))
+      // Completing or adding to an outstanding partial advance
+      if (info.hasOutstandingBalance) {
+        if (amount < totalOwed) {
+          return {
+            periodFrom,
+            periodTo: endOfMonth(periodFrom.getFullYear(), periodFrom.getMonth()),
+            paymentType: 'PARTIAL_ADVANCE',
+            balance: Math.round((totalOwed - amount) * 100) / 100,
+            autoNote: 'Abono a anticipo',
+          }
+        }
+        let periodTo = endOfMonth(periodFrom.getFullYear(), periodFrom.getMonth())
+        const extra = amount - totalOwed
+        if (extra > 0.01) {
+          const nm = (periodTo.getMonth() + 1) % 12
+          const ny = periodTo.getMonth() === 11 ? periodTo.getFullYear() + 1 : periodTo.getFullYear()
+          const extraMonths = Math.floor(extra / price)
+          if (extraMonths > 0) {
+            periodTo = addMonthsEnd(new Date(ny, nm, 1), extraMonths)
+            const rem2 = extra % price
+            if (rem2 > 0.01) {
+              const nm2 = (periodTo.getMonth() + 1) % 12
+              const ny2 = periodTo.getMonth() === 11 ? periodTo.getFullYear() + 1 : periodTo.getFullYear()
+              periodTo = new Date(ny2, nm2, Math.max(1, Math.round(rem2 / price * daysInMonth(ny2, nm2))))
+            }
+          } else {
+            periodTo = new Date(ny, nm, Math.max(1, Math.round(extra / price * daysInMonth(ny, nm))))
+          }
+        }
+        return { periodFrom, periodTo, paymentType: 'FULL', balance: null, autoNote: 'Pago anticipado' }
+      }
+
+      // Fresh advance: partial month → PARTIAL_ADVANCE
+      if (amount < price) {
+        return {
+          periodFrom,
+          periodTo: endOfMonth(periodFrom.getFullYear(), periodFrom.getMonth()),
+          paymentType: 'PARTIAL_ADVANCE',
+          balance: Math.round((price - amount) * 100) / 100,
+          autoNote: 'Abono anticipado',
+        }
+      }
+
+      // Fresh advance: full month(s)
+      const months = Math.floor(amount / price)
       const rem    = amount % price
       let periodTo = addMonthsEnd(periodFrom, months)
       if (rem > 0.01) {
@@ -260,13 +325,7 @@ export class PaymentDialogComponent implements OnChanges, OnDestroy {
         const ny = periodTo.getMonth() === 11 ? periodTo.getFullYear() + 1 : periodTo.getFullYear()
         periodTo = new Date(ny, nm, Math.max(1, Math.round(rem / price * daysInMonth(ny, nm))))
       }
-      return {
-        periodFrom,
-        periodTo,
-        paymentType: 'FULL',
-        balance: null,
-        autoNote: 'Pago anticipado',
-      }
+      return { periodFrom, periodTo, paymentType: 'FULL', balance: null, autoNote: 'Pago anticipado' }
     }
 
     // Partial: amount < totalOwed
