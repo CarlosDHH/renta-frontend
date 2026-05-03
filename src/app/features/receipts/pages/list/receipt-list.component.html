@@ -76,6 +76,16 @@
               [disabled]="pdfLoading() !== null"
               (onClick)="openPdf(receipt)"
             />
+            <p-button
+              icon="pi pi-download"
+              [rounded]="true"
+              [text]="true"
+              severity="info"
+              title="Descargar PDF"
+              [loading]="downloadLoading() === receipt.id"
+              [disabled]="downloadLoading() !== null"
+              (onClick)="downloadReceipt(receipt)"
+            />
             @if (receipt.sendStatus !== 'SENT') {
               <p-button
                 icon="pi pi-send"

@@ -12,6 +12,7 @@ import { MessageService } from 'primeng/api'
 import { FormsModule } from '@angular/forms'
 
 import { ReceiptService, Receipt, SendStatus } from '../../services/receipt.service'
+import { PdfService } from '../../../../core/services/pdf.service'
 
 @Component({
   selector: 'app-receipt-list',
@@ -34,7 +35,8 @@ import { ReceiptService, Receipt, SendStatus } from '../../services/receipt.serv
 export class ReceiptListComponent implements OnInit {
   private receiptService = inject(ReceiptService)
   private messageService = inject(MessageService)
-  private sanitizer = inject(DomSanitizer)
+  private sanitizer      = inject(DomSanitizer)
+  private pdfService     = inject(PdfService)
 
   receipts = signal<Receipt[]>([])
   loading = signal(false)
@@ -44,8 +46,9 @@ export class ReceiptListComponent implements OnInit {
   page = 1
   limit = 20
 
-  // PDF viewer dialog
-  pdfLoading = signal<string | null>(null)
+  // PDF actions
+  pdfLoading      = signal<string | null>(null)
+  downloadLoading = signal<string | null>(null)
   pdfBlobUrl = signal<SafeResourceUrl | null>(null)
   pdfDialogVisible = false
   pdfFolio = ''
@@ -92,7 +95,7 @@ export class ReceiptListComponent implements OnInit {
   }
 
   onPageChange(event: any): void {
-    this.page = event.page + 1
+    this.page = Math.floor(event.first / event.rows) + 1
     this.limit = event.rows
     this.loadReceipts()
   }
@@ -113,6 +116,17 @@ export class ReceiptListComponent implements OnInit {
         this.pdfLoading.set(null)
       },
     })
+  }
+
+  async downloadReceipt(receipt: Receipt): Promise<void> {
+    this.downloadLoading.set(receipt.id)
+    try {
+      await this.pdfService.downloadReceipt(receipt)
+    } catch {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo descargar el comprobante' })
+    } finally {
+      this.downloadLoading.set(null)
+    }
   }
 
   closePdfDialog(): void {

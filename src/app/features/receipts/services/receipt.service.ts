@@ -15,13 +15,24 @@ export interface Receipt {
   payment?: {
     id: string
     amount: number
+    balance?: number | null
     periodFrom: string
     periodTo: string
-    paymentType: string
+    paymentType: 'FULL' | 'PARTIAL_ADVANCE' | 'PARTIAL_LATE' | string
+    paymentMethod?: 'CASH' | 'TRANSFER' | 'CARD' | string
+    notes?: string | null
     paidAt: string
+    user?: { name: string; lastName: string }
     contract?: {
-      customer: { id: string; name: string; lastName: string }
-      plan: { id: string; name: string; price: number }
+      customer: {
+        id: string
+        name: string
+        lastName: string
+        municipality?: string
+        city?: string
+        phone?: string
+      }
+      plan: { id: string; name: string; price: number; mbps?: number }
     }
   }
 }
