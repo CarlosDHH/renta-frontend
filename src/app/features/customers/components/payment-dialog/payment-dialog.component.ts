@@ -244,7 +244,7 @@ export class PaymentDialogComponent implements OnChanges, OnDestroy {
     return {
       status,
       pendingMonths: pending,
-      totalOwed: hasOutstandingBalance ? pendingBalance! : pending * this.planPrice,
+      totalOwed: hasOutstandingBalance ? pendingBalance! + pending * this.planPrice : pending * this.planPrice,
       periodFrom,
       isFirstPayment: false,
       isLate,

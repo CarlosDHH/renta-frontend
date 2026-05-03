@@ -82,7 +82,7 @@ export class PlanListComponent implements OnInit {
   }
 
   onPageChange(event: any): void {
-    this.page = event.page + 1
+    this.page = Math.floor(event.first / event.rows) + 1
     this.limit = event.rows
     this.loadPlans()
   }

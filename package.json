@@ -35,6 +35,7 @@
     "@ngrx/store-devtools": "^20.1.0",
     "@primeng/themes": "^20.4.0",
     "idb": "^8.0.3",
+    "jspdf": "^4.2.1",
     "primeicons": "^7.0.0",
     "primeng": "^20.4.0",
     "rxjs": "~7.8.0",
